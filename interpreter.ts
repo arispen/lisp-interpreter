@@ -6,6 +6,12 @@ type LispAtom = LispNumber | LispSymbol
 
 class LispInterpreter {
 
+    public globalEnvironment
+
+    constructor() {
+        this.globalEnvironment = new LispEnvironment()
+    }
+
     tokenize(program: string): string[] {
         return program.replace(/\(/g, " ( ").replace(/\)/g, " ) ").trim().split(/\s+/);
     }
@@ -47,7 +53,7 @@ class LispInterpreter {
         }
     }
 
-    eval(expression: LispList, environment = globalEnvironment) {
+    eval(expression: LispList, environment = this.globalEnvironment) {
         if(typeof expression === "string") {
             const env = environment.findEnvironment(expression);
             return env[expression];
