@@ -5,10 +5,10 @@ class LispEnvironment extends Map {
         argsValues?: LispAtom[],
         outerEnvironment?: LispEnvironment) {
         super();
+        this.addStandardEnv();
         if (outerEnvironment) {
             this.outerEnvironment = outerEnvironment;
         }
-        this.set("+", (a: number, b: number) => a + b);
         if (paramDefinitions && paramDefinitions?.length > 0
             && argsValues && argsValues.length === paramDefinitions.length) {
             this.addArgsToEnv(paramDefinitions, argsValues)
@@ -23,6 +23,21 @@ class LispEnvironment extends Map {
             const arg = argsValues[index];
             this.set(param, arg);
         }
+    }
+
+    private addStandardEnv() {
+        this.set("+", (a: LispNumber, b: LispNumber) => a + b);
+        this.set("-", (a: LispNumber, b: LispNumber) => a - b);
+        this.set("/", (a: LispNumber, b: LispNumber) => a / b);
+        this.set("*", (a: LispNumber, b: LispNumber) => a * b);
+        this.set("=", (a: LispNumber, b: LispNumber) => a === b);
+        this.set("<", (a: LispNumber, b: LispNumber) => a < b);
+        this.set(">", (a: LispNumber, b: LispNumber) => a > b);
+        this.set("<=", (a: LispNumber, b: LispNumber) => a <= b);
+        this.set(">=", (a: LispNumber, b: LispNumber) => a >= b);
+        this.set("cons", (a: LispAtom | LispList, b: LispAtom | LispList) => [a, b]);
+        this.set("car", (a: LispList) => a[0]);
+        this.set("cdr", (a: LispList) => a.slice(1));
     }
 
     public findEnvironment(variableName: LispSymbol): LispEnvironment {
