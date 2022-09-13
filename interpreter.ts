@@ -1,12 +1,12 @@
-type LispSymbol = string
-type LispList = Array<LispList | LispAtom>
-type LispNumber = number
-
-type LispAtom = LispNumber | LispSymbol
+type LispSymbol = string;
+type LispNumber = number;
+type LispAtom = LispNumber | LispSymbol;
+type LispList = Array<LispList | LispAtom>;
+type LispExpression = LispAtom | LispList;
 
 class LispInterpreter {
 
-    public globalEnvironment
+    public globalEnvironment: LispEnvironment;
 
     constructor() {
         this.globalEnvironment = new LispEnvironment()
@@ -53,10 +53,23 @@ class LispInterpreter {
         }
     }
 
-    eval(expression: LispList, environment = this.globalEnvironment) {
+    eval(expression: LispExpression, environment = this.globalEnvironment) {
         if(typeof expression === "string") {
             const env = environment.findEnvironment(expression);
-            return env[expression];
+            return env.get(expression);
+        } else if (typeof expression === "number") {
+            return expression;
+        } else if (expression[0] === "if") {
+            const [_, test, conseq, alt] = expression;
+            const exp = test ? conseq : alt;
+            return this.eval(exp);
+        } else if (expression[0] === "define") {
+            const [_, varName, exp] = expression;
+            environment.set(varName, this.eval(exp, environment));
+        } else if (expression[0] === "set!") {
+            const [_, varName, exp] = expression;
+            const variable = environment.findEnvironment(varName as LispSymbol).get(varName);
+            environment.set(variable, this.eval(exp, environment));
         }
     }
 }
