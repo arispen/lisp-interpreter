@@ -15,3 +15,4 @@ console.log(evaluated);
 ```bash
 npm t
 ```
+[![Node.js CI](https://github.com/arispen/lisp-interpreter/actions/workflows/node.js.yml/badge.svg)](https://github.com/arispen/lisp-interpreter/actions/workflows/node.js.yml)
