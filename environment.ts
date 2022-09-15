@@ -1,4 +1,7 @@
-class LispEnvironment extends Map {
+import { LispSymbol, LispAtom, LispNumber, LispList } from "./interpreter";
+
+
+export class LispEnvironment extends Map {
     public outerEnvironment: LispEnvironment;
 
     constructor(paramDefinitions?: LispSymbol[],
