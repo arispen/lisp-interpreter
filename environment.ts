@@ -46,8 +46,10 @@ export class LispEnvironment extends Map {
     public findEnvironment(variableName: LispSymbol): LispEnvironment {
         if (this.get(variableName) !== undefined) {
             return this
-        } else {
+        } else if (this.outerEnvironment) {
             return this.outerEnvironment.findEnvironment(variableName);
+        } else {
+            throw new Error(`variable ${variableName} is not defined`);
         }
     }
 }

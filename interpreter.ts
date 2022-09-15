@@ -75,8 +75,8 @@ export class LispInterpreter {
             environment.set(variable, this.evaluate(exp, environment));
         } else if (expression[0] === "lambda") {
             const [_, params, exp] = expression;
-            return function (...args: LispAtom[]) {
-                return this.eval(exp, new LispEnvironment(params as string[], args, environment));
+            return (...args: LispAtom[]) => {
+                return this.evaluate(exp, new LispEnvironment(params as string[], args, environment));
             };
         } else if (expression[0] === "begin"){
             let result;

@@ -43,4 +43,10 @@ describe("lisp interpreter tests", () => {
         const evaluated = lispInterpreter.evaluate(parsed);
         expect(evaluated).toEqual(28.26);
     });
+    it("should evaluate   into  ", () => {
+        const code = "(begin (define twice (lambda (x) (* 2 x))) (twice 13))";
+        const parsed = lispInterpreter.parse(code);
+        const evaluated = lispInterpreter.evaluate(parsed);
+        expect(evaluated).toEqual(26);
+    });
 })
