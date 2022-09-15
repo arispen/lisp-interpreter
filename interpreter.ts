@@ -6,19 +6,19 @@ export type LispAtom = LispNumber | LispSymbol;
 export type LispList = Array<LispList | LispAtom>;
 export type LispExpression = LispAtom | LispList;
 
-class LispInterpreter {
+export class LispInterpreter {
 
-    public globalEnvironment: LispEnvironment;
+    private globalEnvironment: LispEnvironment;
 
     constructor() {
         this.globalEnvironment = new LispEnvironment()
     }
 
-    tokenize(program: string): string[] {
+    private tokenize(program: string): string[] {
         return program.replace(/\(/g, " ( ").replace(/\)/g, " ) ").trim().split(/\s+/);
     }
 
-    readFromTokens(tokens: string[]): LispList | LispAtom {
+    private readFromTokens(tokens: string[]): LispExpression {
         let syntax: LispList | LispAtom = [];
         if (tokens.length === 0) {
             console.error("Unexpected EOF while reading");
@@ -42,11 +42,11 @@ class LispInterpreter {
         return syntax;
     }
 
-    parse(program: string) {
+    public parse(program: string): LispExpression {
         return this.readFromTokens(this.tokenize(program));
     }
 
-    atom(token: unknown): LispAtom {
+    private atom(token: unknown): LispAtom {
         const number = Number(token);
         if (isNaN(number)) {
             return token as LispSymbol;
@@ -55,8 +55,10 @@ class LispInterpreter {
         }
     }
 
-    evaluate(expression: LispExpression, environment = this.globalEnvironment): number | Function | void {
-        if(typeof expression === "string") {
+    public evaluate(expression: LispExpression, environment?: LispEnvironment): number | Function | void {
+        environment = environment || this.globalEnvironment;
+        console.warn(expression);
+        if (typeof expression === "string") {
             const env = environment.findEnvironment(expression);
             return env.get(expression);
         } else if (typeof expression === "number") {
@@ -74,17 +76,22 @@ class LispInterpreter {
             environment.set(variable, this.evaluate(exp, environment));
         } else if (expression[0] === "lambda") {
             const [_, params, exp] = expression;
-            return function() {
-                const args: LispAtom[] = [...arguments];
+            return function (...args: LispAtom[]) {
                 return this.eval(exp, new LispEnvironment(params as string[], args, environment));
             };
+        } else if (expression[0] === "begin"){
+            let result;
+            for (let index = 1; index < expression.length; index++) {
+                result = this.evaluate(expression[index], environment);
+            }
+            return result;
         } else {
             const expressions: Function[] = [];
-                
+
             for (let index = 0; index < expression.length; index++) {
                 expressions[index] = this.evaluate(expression[index], environment) as Function;
             }
-            
+
             const procedure: Function = expressions.shift() as Function;
             return procedure.apply(environment, expressions);
         }
