@@ -71,8 +71,9 @@ export class LispInterpreter {
             environment.set(varName, this.evaluate(exp, environment));
         } else if (expression[0] === "set!") {
             const [_, varName, exp] = expression;
-            const variable = environment.findEnvironment(varName as LispSymbol).get(varName);
-            environment.set(variable, this.evaluate(exp, environment));
+            const env = environment.findEnvironment(varName as LispSymbol);
+            const evaluated = this.evaluate(exp, environment);
+            env.set(varName, evaluated);
         } else if (expression[0] === "lambda") {
             const [_, params, exp] = expression;
             return (...args: LispAtom[]) => {

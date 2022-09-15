@@ -4,7 +4,7 @@ let lispInterpreter: LispInterpreter;
 
 describe("lisp interpreter tests", () => {
 
-    beforeAll(() => {
+    beforeEach(() => {
         lispInterpreter = new LispInterpreter();
     });
     it("should evaluate (+ 1 2) into 3", () => {
@@ -43,10 +43,16 @@ describe("lisp interpreter tests", () => {
         const evaluated = lispInterpreter.evaluate(parsed);
         expect(evaluated).toEqual(28.26);
     });
-    it("should evaluate   into  ", () => {
+    it("should evaluate (begin (define twice (lambda (x) (* 2 x))) (twice 13)) into 26", () => {
         const code = "(begin (define twice (lambda (x) (* 2 x))) (twice 13))";
         const parsed = lispInterpreter.parse(code);
         const evaluated = lispInterpreter.evaluate(parsed);
         expect(evaluated).toEqual(26);
+    });
+    it("should evaluate  into 28.26", () => {
+        const code = "(begin (define r 3) (set! r 6) (* 3.14 (* r r)))";
+        const parsed = lispInterpreter.parse(code);
+        const evaluated = lispInterpreter.evaluate(parsed);
+        expect(evaluated).toEqual(113.04);
     });
 })
