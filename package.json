@@ -4,7 +4,7 @@
   "description": "",
   "main": "test.ts",
   "scripts": {
-    "test": "npx jest ./"
+    "test": "jest ./"
   },
   "repository": {
     "type": "git",
