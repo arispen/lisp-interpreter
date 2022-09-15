@@ -57,7 +57,6 @@ export class LispInterpreter {
 
     public evaluate(expression: LispExpression, environment?: LispEnvironment): number | Function | void {
         environment = environment || this.globalEnvironment;
-        console.warn(expression);
         if (typeof expression === "string") {
             const env = environment.findEnvironment(expression);
             return env.get(expression);
