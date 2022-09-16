@@ -49,7 +49,7 @@ describe("lisp interpreter tests", () => {
         const evaluated = lispInterpreter.evaluate(parsed);
         expect(evaluated).toEqual(26);
     });
-    it("should evaluate  into 28.26", () => {
+    it("should evaluate (begin (define r 3) (set! r 6) (* 3.14 (* r r))) into 113.04", () => {
         const code = "(begin (define r 3) (set! r 6) (* 3.14 (* r r)))";
         const parsed = lispInterpreter.parse(code);
         const evaluated = lispInterpreter.evaluate(parsed);
